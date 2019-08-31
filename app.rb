@@ -2,17 +2,24 @@ require_relative 'algorithm'
 require_relative 'travel_matrix'
 require 'geocoder'
 
-# Places you want to visit in the fastest possible time
-coords = [[52.516266, 13.377775], [52.518623, 13.376198], [52.535152, 13.390206], [52.518898, 13.401797]]
+# Places you want to visit
+places = ['Brandenburg Gate', 'Deutsches Technikmuseum',
+          'Berlin Wall', 'Tiergarten']
 
-# options are [driving, walking, bicycling, transit]
-travel_mode = "driving"
+coords = []
+places.each { |e| coords << Geocoder.search(e).first.coordinates }
+
+# Put your travel mode, options are [driving, walking, bicycling, transit]
+travel_mode = 'driving'
 
 travel_matrix = TravelMatrix.generate(coords, travel_mode)
 results = GeneticAlgorithm.run(coords, travel_matrix)
 
 # Best overall time
-puts "The fastest time you can travel this route is: #{results[:record_distance]}"
+puts "You travel mode is #{travel_mode}"
+puts "The fastest time you can travel this route is: #{results[:record_distance]}s"
 
 # Best order of coordinates
-print "In the following order: #{results[:best_ever]}"
+places_in_order = []
+results[:best_ever].each { |e| places_in_order << places[e] }
+print "In the following order: #{places_in_order}"
