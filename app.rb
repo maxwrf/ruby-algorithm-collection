@@ -1,8 +1,8 @@
 require_relative 'algorithm'
 require_relative 'travel_matrix'
+require 'geocoder'
 
-require 'pry-byebug'
-
+# Places you want to visit in the fastest possible time
 coords = [[52.516266, 13.377775], [52.518623, 13.376198], [52.535152, 13.390206], [52.518898, 13.401797]]
 
 # options are [driving, walking, bicycling, transit]

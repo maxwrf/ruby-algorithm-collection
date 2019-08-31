@@ -1,14 +1,8 @@
-require 'geocoder'
 class GeneticAlgorithm
-
-
   def self.run(sights, travel_matrix)
     record_distance = Float::INFINITY
     best_ever = []
-    current_best = []
     order = sights.each_with_index.map { |_e, i| i }
-    # permutations = (1..sights.length).inject(:*) || 1
-    # count = 0
     population = []
     population_size = 500
     fitness = []
@@ -18,8 +12,8 @@ class GeneticAlgorithm
     end
 
     100.times do
-      # some loop
-      results = calc_fitness(population, sights, record_distance, fitness, best_ever, travel_matrix)
+      results = calc_fitness(population, record_distance,
+                             fitness, best_ever, travel_matrix)
       fitness = results[:fitness]
       if results[:record_distance] < record_distance
         best_ever = results[:best_ever]
@@ -33,13 +27,14 @@ class GeneticAlgorithm
     { record_distance: record_distance, best_ever: best_ever }
   end
 
-private
+  private
 
-  def self.calc_fitness(population, sights, record_distance, fitness, best_ever, travel_matrix)
+  def self.calc_fitness(population, record_distance,
+                        fitness, best_ever, travel_matrix)
     current_record = Float::INFINITY
     current_best = []
     population.each_with_index do |orderpop, index|
-      d = calc_distance(sights, orderpop, travel_matrix)
+      d = calc_distance(orderpop, travel_matrix)
       if d < record_distance
         record_distance = d
         best_ever = orderpop
@@ -49,7 +44,8 @@ private
       end
       fitness[index] = 1 / (d**8 + 1).to_f
     end
-    { fitness: fitness, record_distance: record_distance, best_ever: best_ever, current_record: current_record, current_best: current_best }
+    { fitness: fitness, record_distance: record_distance, best_ever: best_ever,
+      current_record: current_record, current_best: current_best }
   end
 
   def self.normalize_fitness(population, fitness)
@@ -62,10 +58,9 @@ private
     end
   end
 
-  def self.next_generation(population,fitness)
+  def self.next_generation(population, fitness)
     new_population = []
     population.each_with_index do |_orderpop, index|
-      # new_population[index] = orderpop
       order_a = pick_one(population, fitness)
       order_b = pick_one(population, fitness)
       order = cross_over(order_a, order_b)
@@ -81,19 +76,17 @@ private
     new_order = order_a.slice(start..ending)
     order_b.each do |i|
       sight = i
-      if new_order.include?(sight) == false
-        new_order.push(sight)
-      end
+      new_order.push(sight) if new_order.include?(sight) == false
     end
-    return new_order
+    new_order
   end
 
-  def self.pick_one(population,fitness)
+  def self.pick_one(population, fitness)
     index = 0
     r = rand
 
-    while r > 0
-      r = r - fitness[index]
+    while r.positive?
+      r -= fitness[index]
       index += 1
     end
     index -= 1
@@ -110,22 +103,24 @@ private
     end
   end
 
-  def self.calc_distance(sights, order, travel_matrix)
+  def self.calc_distance(order, travel_matrix)
     sum = 0
-
     order.each_with_index do |i, index|
       break if index == order.length - 1
+
       d = travel_matrix[i, order[index + 1]]
       sum += d
     end
-
-    return sum
+    sum
   end
 
   def self.swap(order, index_a, index_b)
     save = order[index_a]
     order[index_a] = order[index_b]
     order[index_b] = save
-    return order
+    order
   end
+
+  private_class_method :swap, :calc_distance, :mutate, :pick_one, :cross_over,
+                       :next_generation, :normalize_fitness, :calc_fitness
 end
