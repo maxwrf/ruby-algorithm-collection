@@ -3,7 +3,6 @@ require 'open-uri'
 require 'nokogiri'
 require 'json'
 require 'dotenv/load'
-require 'pry-byebug'
 
 class TravelMatrix
   def self.generate(sights, travel_mode)
