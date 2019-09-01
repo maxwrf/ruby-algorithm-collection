@@ -3,32 +3,17 @@ require_relative 'node'
 require_relative 'graph'
 require 'pry-byebug'
 
-def breadth_first_search
-  graph = Graph.new
-  data = JSON.parse(File.read('data.json'))
-  data["movies"].each do |movie|
-    movie_node = Node.new(movie['title'])
-    graph.add_node(movie_node)
-    movie["cast"].each do |actor|
-      actor_node = graph.get_node(actor)
-      if actor_node.nil?
-        actor_node = Node.new(actor)
-        graph.add_node(actor_node)
-      end
-      movie_node.add_edge(actor_node)
-    end
-  end
+def breadth_first_search(data, actor1, actor2)
+  graph = build_graph(data)
 
-  graph.set_end("Kevin Bacon")
+  graph.set_end(actor2)
   ending = graph.end
 
-  graph.set_start("Rachel McAdams")
+  graph.set_start(actor1)
   start = graph.start
 
   queue = []
-
   start.searched = true
-
   queue << start
 
   while queue.length.positive?
@@ -45,7 +30,29 @@ def breadth_first_search
       end
     end
   end
+  path(ending)
+end
 
+private
+
+def build_graph(data)
+  graph = Graph.new
+  data['movies'].each do |movie|
+    movie_node = Node.new(movie['title'])
+    graph.add_node(movie_node)
+    movie['cast'].each do |actor|
+      actor_node = graph.get_node(actor)
+      if actor_node.nil?
+        actor_node = Node.new(actor)
+        graph.add_node(actor_node)
+      end
+      movie_node.add_edge(actor_node)
+    end
+  end
+  graph
+end
+
+def path(ending)
   path = []
   path << ending
   parent = ending.parent
@@ -53,6 +60,8 @@ def breadth_first_search
     path << parent
     parent = parent.parent
   end
+
+  path.reverse!
 
   path.each_with_index do |node, index|
     if index == path.length - 1
