@@ -3,7 +3,7 @@ require_relative 'cell'
 require 'pry-byebug'
 
 class Grid
-  def self.generate
-    grid = Matrix.build(5, 5) { |row, col| Cell.new(row, col) }
+  def self.generate(rows, cols)
+    grid = Matrix.build(rows, cols) { |row, col| Cell.new(row, col) }
   end
 end
