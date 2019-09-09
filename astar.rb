@@ -2,7 +2,6 @@ class Astar
   def self.run(grid, start, ending)
     open_set = []
     closed_set = []
-    start = grid[start[0], start[1]]
     open_set << start
 
     while open_set.empty? == false
@@ -20,7 +19,8 @@ class Astar
       open_set.delete(current)
 
       current.neighbors.each do |neighbor|
-        unless closed_set.include?(neighbor)
+        current.show
+        if !closed_set.include?(neighbor) && !neighbor.wall
           temp_g = current.g + 1
           if open_set.include?(neighbor)
             neighbor.g = temp_g if temp_g < neighbor.g
@@ -34,7 +34,11 @@ class Astar
         end
       end
     end
-    evaluate(current)
+    if current == ending
+      evaluate(current)
+    else
+      puts 'No solution'
+    end
   end
 
   def self.heuristic(cell_a, cell_b)
@@ -52,5 +56,6 @@ class Astar
     end
 
     path.each(&:show)
+    puts path.length
   end
 end
