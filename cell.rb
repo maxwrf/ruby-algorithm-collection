@@ -1,6 +1,6 @@
 class Cell
   attr_reader :neighbors, :row, :col
-  attr_accessor :f, :g, :h
+  attr_accessor :f, :g, :h, :previous
   def initialize(row, col)
     @row = row
     @col = col
@@ -8,6 +8,7 @@ class Cell
     @g = 0
     @h = 0
     @neighbors = []
+    @previous = nil
   end
 
   def show

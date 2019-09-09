@@ -2,14 +2,13 @@ require 'pry-byebug'
 require_relative 'matrix'
 
 def heuristic(a, b)
-  x2 = (a.row - b.row)**2
-  y2 = (a.col - b.col)**2
-  Math.sqrt(x2 + y2)
+  (a.row - b.row).abs + (a.col - b.col).abs
 end
 
 grid = Grid.generate
 grid.each { |cell| cell.add_neighbors(grid) }
 
+path = []
 open_set = []
 closed_set = []
 start = grid[0, 0]
@@ -18,9 +17,9 @@ open_set << start
 
 while open_set.empty? == false
   winner = 0
-  grid.each_with_index do |cell, row, col|
-    cell.show
-  end
+  # grid.each_with_index do |cell, row, col|
+  #   cell.show
+  # end
 
   open_set.each_with_index do |cell, index|
     cell.show
@@ -45,14 +44,21 @@ while open_set.empty? == false
       end
       neighbor.h = heuristic(neighbor, ending)
       neighbor.f = neighbor.g + neighbor.h
+      neighbor.previous = current
     end
   end
 
-  closed_set.each do |cell|
-    cell.show
-  end
+  # closed_set.each do |cell|
+  #   cell.show
+  # end
 end
 
 puts "DONE"
+temp = current
+path << temp
+while temp.previous.nil? == false
+  path << temp.previous
+  temp = temp.previous
+end
 
-
+path.each(&:show)
