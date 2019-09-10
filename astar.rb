@@ -22,15 +22,22 @@ class Astar
         current.show
         if !closed_set.include?(neighbor) && !neighbor.wall
           temp_g = current.g + 1
+          new_path = false
           if open_set.include?(neighbor)
-            neighbor.g = temp_g if temp_g < neighbor.g
+            if temp_g < neighbor.g
+              neighbor.g = temp_g
+              new_path = true
+            end
           else
             neighbor.g = temp_g
             open_set << neighbor
+            new_path = true
           end
-          neighbor.h = heuristic(neighbor, ending)
-          neighbor.f = neighbor.g + neighbor.h
-          neighbor.previous = current
+          if new_path
+            neighbor.h = heuristic(neighbor, ending)
+            neighbor.f = neighbor.g + neighbor.h
+            neighbor.previous = current
+          end
         end
       end
     end
@@ -42,7 +49,8 @@ class Astar
   end
 
   def self.heuristic(cell_a, cell_b)
-    (cell_a.row - cell_b.row).abs + (cell_a.col - cell_b.col).abs
+    # (cell_a.row - cell_b.row).abs + (cell_a.col - cell_b.col).abs
+    Math.sqrt((cell_a.row - cell_b.row)**2 + (cell_a.col - cell_b.col)**2)
   end
 
   def self.evaluate(current)
