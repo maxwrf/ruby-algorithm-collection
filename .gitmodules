@@ -1,6 +1,3 @@
-[submodule "breadth-first-search"]
-	path = breadth-first-search
-	url = https://github.com/maxwrf/breadth-first-search
 [submodule "tsp-lexiographic-order"]
 	path = tsp-lexiographic-order
 	url = https://github.com/maxwrf/tsm-lexicographic-order
