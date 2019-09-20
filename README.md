@@ -9,3 +9,5 @@
 * breadth first search algorithm
   - Traversing a graph of nodes by exploring all neighbours first and then moving on to the next level
   - In this example connections between actors can be found. 
+* binary search tree
+ - a binary search tree holding numbers on each node. Tree can be traversed and searched for a specific value. 
