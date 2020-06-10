@@ -24,7 +24,7 @@ GEM
     concurrent-ruby (1.1.5)
     crass (1.0.4)
     erubi (1.8.0)
-    geocoder (1.5.1)
+    geocoder (1.6.1)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     json (2.2.0)
